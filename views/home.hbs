@@ -1,0 +1,175 @@
+<label class="switch">
+  <input type="checkbox" onchange='handleChange(this);'>
+  <div class="slider"></div>
+</label>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+  function handleChange(checkbox) {
+    if(checkbox.checked == true){
+        $.ajax({
+        type:'POST',
+        url:"/checked",
+    
+        });
+    }else{
+        $.ajax({
+        type:'POST',
+        url:"/unchecked",
+    
+        });
+        location.reload() 
+   }
+}
+</script>
+<h2 id="test">here</h2>
+
+<script>
+  $.ajax({
+    type:'POST',
+    url:"/test.js",
+    data:"1",
+    async:true,
+    success:function(){
+        document.getElementById("test").innerHTML = "post success";
+    }
+  });
+</script>
+
+<div class="main">
+  <h2>Device Motion</h2>
+  <table>
+    <tr>
+      <td>Event Supported</td>
+      <td id="dmEvent"></td>
+    </tr>
+    <tr>
+      <td>acceleration</td>
+      <td id="moAccel"></td>
+    </tr>
+    <tr>
+      <td>accelerationIncludingGravity</td>
+      <td id="moAccelGrav"></td>
+    </tr>
+    <tr>
+      <td>rotationRate</td>
+      <td id="moRotation"></td>
+    </tr>
+    <tr>
+      <td>interval</td>
+      <td id="moInterval"></td>
+    </tr>
+  </table>
+</div>
+<script>
+counter = 0;
+dataset = [];
+
+motion()
+function motion() {
+    if (window.DeviceMotionEvent) {
+        
+        window.addEventListener('devicemotion', deviceMotionHandler, false);
+    } else {
+        document.getElementById("dmEvent").innerHTML = "Not supported."
+    }
+}
+ 
+function deviceMotionHandler(eventData) {
+  
+  
+    var xyz = "[X, Y, Z]";
+  
+  
+    // Grab the acceleration from the results
+    acceleration = eventData.acceleration;
+    acceleration_x = acceleration.x;
+    acceleration_y = acceleration.y;
+    acceleration_z = acceleration.z;
+
+    info1 = xyz.replace("X", acceleration_x);
+    info1 = info1.replace("Y", acceleration_y);
+    info1 = info1.replace("Z", acceleration_z);
+    
+
+    // Grab the acceleration including gravity from the results
+    acceleration = eventData.accelerationIncludingGravity;
+    accelerationIncludingGravity_x = acceleration.x;
+    accelerationIncludingGravity_y = acceleration.y;
+    accelerationIncludingGravity_z = acceleration.z;
+
+
+    info2 = xyz.replace("X", acceleration.x);
+    info2 = info2.replace("Y", acceleration.y);
+    info2 = info2.replace("Z", acceleration.z);
+    
+
+    // Grab the rotation rate from the results
+    rotation = eventData.rotationRate;
+    rotation_alpha = rotation.alpha;
+    rotation_beta = rotation.beta;
+    rotation_gamma = rotation.gamma;
+
+    info3 = xyz.replace("X", rotation.alpha);
+    info3 = info3.replace("Y", rotation.beta);
+    info3 = info3.replace("Z", rotation.gamma);
+    
+
+    // // Grab the refresh interval from the results
+    //info = eventData.interval;
+     
+       
+}
+</script>
+<script>
+    // sample 20 times per second
+    setInterval(sample, 50)
+    function sample(){
+	document.getElementById("moAccel").innerHTML = info1;
+	document.getElementById("moAccelGrav").innerHTML = info2;
+	document.getElementById("moRotation").innerHTML = info3;
+        document.getElementById("moInterval").innerHTML = counter;
+	
+        var record = {
+        "acceleration_x" : acceleration_x,
+        "acceleration_y" : acceleration_y,
+        "acceleration_z" : acceleration_z,
+
+        "accelerationIncludingGravity_x" : accelerationIncludingGravity_x,
+        "accelerationIncludingGravity_y" : accelerationIncludingGravity_y,
+        "accelerationIncludingGravity_z" : accelerationIncludingGravity_z,
+
+        "rotation_alpha" : rotation_alpha,
+        "rotation_beta" : rotation_beta,
+        "rotation_gamma" : rotation_gamma
+	};
+        
+        dataset.push(record)
+	
+	var dataString = JSON.stringify(dataset);
+        counter = counter+1 
+        // post dataset ot server per 5 seconds
+	if(this.counter == 100){
+	    test = {"name":"nikita", "password":"1111"}
+	    //var dataString = JSON.stringify(test);
+	    //clearInterval(t2)
+	    $.ajax({
+                url: '/write_data',
+                data: dataString,
+        	type: 'post',
+        	dataType: 'json',
+        	contentType: 'application/json;charset=utf-8',
+        	cache: false,
+        	
+            })
+
+	    location.reload()
+	    counter = 0
+	}
+	
+    }
+    
+
+</script>
+
+
+
