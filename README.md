@@ -11,7 +11,9 @@ sudo docker run -p 127.0.0.1:8086:8086 -p 127.0.0.1:8083:8083 -v influxdb:/var/l
 -e INFLUXDB_ADMIN_ENABLED=true  influxdb
 3. create a new database named training in influxdb
 4. create a new measurement named motion_sensor in training
+
 schema
+
 accelerationIncludingGravity_x	accelerationIncludingGravity_y	accelerationIncludingGravity_z	acceleration_x	acceleration_y	acceleration_z	rotation_alpha	rotation_beta	rotation_gamma	value
 5. use your smartphone to search the page <your-computers-ip>:3000
 
