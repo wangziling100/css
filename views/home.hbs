@@ -1,7 +1,9 @@
 <label class="switch">
   <input type="checkbox" onchange='handleChange(this);'>
   <div class="slider"></div>
+  
 </label>
+<h2>{{check_status}}</h2>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
   function handleChange(checkbox) {
@@ -21,19 +23,7 @@
    }
 }
 </script>
-<h2 id="test">here</h2>
 
-<script>
-  $.ajax({
-    type:'POST',
-    url:"/test.js",
-    data:"1",
-    async:true,
-    success:function(){
-        document.getElementById("test").innerHTML = "post success";
-    }
-  });
-</script>
 
 <div class="main">
   <h2>Device Motion</h2>
@@ -55,8 +45,8 @@
       <td id="moRotation"></td>
     </tr>
     <tr>
-      <td>interval</td>
-      <td id="moInterval"></td>
+      <td>counts</td>
+      <td id="moCounts"></td>
     </tr>
   </table>
 </div>
@@ -127,7 +117,7 @@ function deviceMotionHandler(eventData) {
 	document.getElementById("moAccel").innerHTML = info1;
 	document.getElementById("moAccelGrav").innerHTML = info2;
 	document.getElementById("moRotation").innerHTML = info3;
-        document.getElementById("moInterval").innerHTML = counter;
+        document.getElementById("moCounts").innerHTML = counter;
 	
         var record = {
         "acceleration_x" : acceleration_x,
@@ -140,16 +130,17 @@ function deviceMotionHandler(eventData) {
 
         "rotation_alpha" : rotation_alpha,
         "rotation_beta" : rotation_beta,
-        "rotation_gamma" : rotation_gamma
+        "rotation_gamma" : rotation_gamma,
+        "time" : Date.now()
 	};
         
         dataset.push(record)
 	
 	var dataString = JSON.stringify(dataset);
         counter = counter+1 
-        // post dataset ot server per 5 seconds
-	if(this.counter == 100){
-	    test = {"name":"nikita", "password":"1111"}
+        // post dataset ot server per 15 seconds
+	if(this.counter == 600){
+	    //test = {"name":"nikita", "password":"1111"}
 	    //var dataString = JSON.stringify(test);
 	    //clearInterval(t2)
 	    $.ajax({
